@@ -2,25 +2,45 @@
 {% set active_page = 'home' %}
 {% block title %} Home {% endblock %}
 {% block content %}
+<div class="w-50">
+<form method="post" action="/home">
+  {{ form.csrf_token }}
+  <div class="mb-3">
+	<fieldset class="form-field">
+		{{ form.date.label(class="form-label") }}
+		{{ form.date(class="form-control") }}
+		{% if form.date.errors %}
+            <ul class="errors">
+              {% for error in form.date.errors %}
+				`  <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+	    {% endif %}
+    </fieldset>
+	<fieldset class="form-field">
+		{{ form.count.label(class="form-label") }}
+		{{ form.count(class="form-control") }}
+    </fieldset>
+    {{ form.submit(class="btn btn-primary") }}
+  </div>
+</form>
+</div>
 <table class="table table-striped">
   <thead>
     <tr>
       <th scope="col">#</th>
       <th scope="col">Name</th>
-      <th scope="col">Rating</th>
+      <th scope="col">Birth year</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
-		{% for business in myData %}
+		{% for person in results %}
 			<tr>
 				<td>{{ loop.index0 }}</td>
-				<td>{{ business['name']}}</td>			
-				<td>{{ business['rating']}}</td>			
+				<td>{{ person['name']}}</td>
+				<td>{{ person['yearborn']}}</td>
 			</tr>
-		
         {% endfor %}
-    </tr>
   </tbody>
 </table>
- {% endblock %}
+{% endblock %}

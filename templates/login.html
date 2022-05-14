@@ -3,7 +3,7 @@
 {% block title %} Login {% endblock %}
 {% block content %} 
 <div class="w-50">
-<form method="post">
+<form method="post" action="/login">
   {{ form.csrf_token }}
   <div class="mb-3">
 	<fieldset class="form-field">
@@ -27,4 +27,4 @@
   {{ form.submit(class="btn btn-primary") }}
 </form>
 </div>
- {% endblock %}
+{% endblock %}
