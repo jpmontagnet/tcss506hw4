@@ -1,3 +1,4 @@
+import requests
 from flask import Flask, render_template, request, redirect
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, DateField, IntegerField, SubmitField
@@ -30,6 +31,29 @@ canned_results = [
 app = Flask(__name__, template_folder="templates")
 app.secret_key = "sekrit"
 
+def findBirths(monthDay, year, size=10):
+    """
+    monthDay is in form "mm/dd"
+    year is in form "yyyy"
+    returns a list of names, birth years and thumbnails
+    sortedbyClosestYear[i]['text'] has name of ith match
+    sortedbyClosestYear[i]['year'] has year of ith match's birthdate
+    sortedbyClosestYear[i]['thumbnail'] has url of ith match's thumbnail picture or localhost if there is none
+    """
+    size = int(size)
+    year = int(year)
+    path = "https://api.wikimedia.org/feed/v1/wikipedia/en/onthisday"
+    response = requests.get(path + "/births/" + monthDay)
+    data = response.json()
+    sortedbyClosestYear = sorted(data["births"], key=lambda i: abs(int(i['year']) - year))
+    if len(sortedbyClosestYear) > size:
+        sortedbyClosestYear = sortedbyClosestYear[0:size]
+    for item in sortedbyClosestYear:
+        item['thumbnail'] = "localhost"
+        if "thumbnail" in item['pages'][0]:
+            item['thumbnail'] = item['pages'][0]["thumbnail"]["source"]
+    return sortedbyClosestYear
+
 @app.route("/home", methods=['GET', 'POST'])
 def home():
     print("In home")
@@ -41,9 +65,24 @@ def home():
             # print("Validation ok")
             date = request.form["date"]
             count = request.form["count"]
-            # print(f"date='{date}' count='{count}'")
+            print(f"date='{date}' count='{count}'")
+            dparts = date.split('-')
+            year = dparts[0]
+            month = dparts[1]
+            day = dparts[2]
+            dat = findBirths(f"{month}/{day}", year, size=count)
+            print(dat)
             # TODO fetch actual results
-            results = canned_results
+            # results = canned_results
+            results = []
+            for d in dat:
+                results.append({
+                    'name': d['text'],
+                    'year': d['year'],
+                    # 'link': 'http://foo'
+                    'img': d['thumbnail'],
+                })
+            print(results)
         else:
             print("Validation failed")
             pass

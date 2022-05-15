@@ -35,8 +35,9 @@
 		{% for person in results %}
 			<tr>
 				<td>{{ loop.index0 }}</td>
-				<td>{{ person['name']}}</td>
-				<td>{{ person['yearborn']}}</td>
+				<td><img alt="" src="{{ person['img']}}" style="height:50px">
+                    {{ person['name']}}</td>
+				<td>{{ person['year']}}</td>
 			</tr>
         {% endfor %}
   </tbody>
