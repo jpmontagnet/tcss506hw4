@@ -2,11 +2,9 @@
 {% set active_page = 'home' %}
 {% block title %} Home {% endblock %}
 {% block content %}
-<div class="w-50">
-<form method="post" action="/home">
+<form method="post" action="/home" class="row mb-3">
   {{ form.csrf_token }}
-  <div class="mb-3">
-	<fieldset class="form-field">
+	<fieldset class="form-field col-auto">
 		{{ form.date.label(class="form-label") }}
 		{{ form.date(class="form-control") }}
 		{% if form.date.errors %}
@@ -17,14 +15,14 @@
             </ul>
 	    {% endif %}
     </fieldset>
-	<fieldset class="form-field">
+	<fieldset class="form-field col-auto">
 		{{ form.count.label(class="form-label") }}
 		{{ form.count(class="form-control") }}
     </fieldset>
+    <div class="col-auto">
     {{ form.submit(class="btn btn-primary") }}
-  </div>
+    </div>
 </form>
-</div>
 <table class="table table-striped">
   <thead>
     <tr>
